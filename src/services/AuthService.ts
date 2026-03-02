@@ -1,0 +1,84 @@
+"use server";
+
+import { FieldValues } from "react-hook-form";
+import { getValidToken, setCookies } from "./utils";
+
+// region login user
+export const loginUser = async (data: { email: string; password: string }) => {
+  try {
+    const res = await fetch(`${process.env.BASE_API}/auth/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const resData = await res.json();
+
+    await setCookies(resData?.data?.accessToken, resData?.data?.refreshToken);
+
+    return resData;
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// change password
+export const passwordChange = async (userData: FieldValues) => {
+  try {
+    const res = await fetch(`${process.env.BASE_API}/auth/change-password`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: await getValidToken(),
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const result = await res.json();
+
+    return result;
+  } catch (error: any) {
+    return error;
+  }
+};
+
+export const forgotPassword = async (email: string) => {
+  try {
+    const res = await fetch(`${process.env.BASE_API}/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    return await res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// reset password
+export const resetPassword = async (data: {
+  code: number;
+  password: string;
+  email: string;
+}) => {
+  try {
+    const res = await fetch(`${process.env.BASE_API}/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    return await res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
