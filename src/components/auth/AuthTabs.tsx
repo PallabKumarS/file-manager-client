@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <> */
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -5,40 +6,48 @@ import { LoginForm, type LoginFormValues } from "./LoginForm";
 import { RegisterForm, type RegisterFormValues } from "./RegisterForm";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { loginUser } from "@/services/AuthService";
+import { createUser } from "@/services/UserService";
 
 export function AuthTabs() {
   const router = useRouter();
 
   async function handleLogin(values: LoginFormValues) {
+    const toastId = toast.loading("Signing in...");
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-      if (!res.ok) throw new Error("Invalid credentials");
-      toast.success("Welcome back!");
-      router.push("/dashboard");
-    } catch {
-      toast.error("Login failed. Please check your credentials.");
+      const res = await loginUser(values);
+      if (res.success) {
+        toast.success("Welcome back!", { id: toastId });
+        router.push("/dashboard");
+      } else {
+        toast.error(
+          res.message || "Login failed. Please check your credentials.",
+          { id: toastId },
+        );
+      }
+    } catch (error: any) {
+      toast.error(
+        error.message || "Login failed. Please check your credentials.",
+        { id: toastId },
+      );
     }
   }
 
   async function handleRegister(values: RegisterFormValues) {
+    const toastId = toast.loading("Creating account...");
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          password: values.password,
-        }),
+      const res = await createUser(values);
+      if (!res.success) {
+        toast.error(res.message || "Registration failed. Please try again.", {
+          id: toastId,
+        });
+        return;
+      }
+      toast.success("Account created! Please sign in.", { id: toastId });
+    } catch (error: any) {
+      toast.error(error.message || "Registration failed. Please try again.", {
+        id: toastId,
       });
-      if (!res.ok) throw new Error("Registration failed");
-      toast.success("Account created! Please sign in.");
-    } catch {
-      toast.error("Registration failed. Please try again.");
     }
   }
 

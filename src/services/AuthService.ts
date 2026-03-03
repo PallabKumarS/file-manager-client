@@ -1,6 +1,7 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <> */
 "use server";
 
-import { FieldValues } from "react-hook-form";
+import type { FieldValues } from "react-hook-form";
 import { getValidToken, setCookies } from "./utils";
 
 // region login user

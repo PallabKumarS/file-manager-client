@@ -5,7 +5,12 @@ export interface User {
   email: string;
   name: string;
   role: Role;
-  subscriptionId: string;
+
+  subscriptionId: string | null;
+  subscription: Subscription | null;
+  folders: Folder[] | null;
+  files: File[] | null;
+  subscriptionHistories: SubscriptionHistory[] | null;
 
   totalFolders: number;
   totalFiles: number;
@@ -13,34 +18,6 @@ export interface User {
 
   createdAt: string;
   updatedAt: string | null;
-}
-
-export interface Folder {
-  id: string;
-  name: string;
-
-  userId: string;
-  parentId: string | null;
-  nestLevel: number;
-
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface File {
-  id: string;
-  name: string;
-  url: string;
-  size: number;
-  type: FileType;
-
-  userId: string;
-  folderId: string;
-
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Subscription {
@@ -55,6 +32,48 @@ export interface Subscription {
   totalFiles: number;
   allowedFileTypes: FileType[];
 
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Folder {
+  id: string;
+  name: string;
+
+  userId: string;
+  parentId: string | null;
+  children: Folder[] | null;
+  files: File[] | null;
+
+  nestLevel: number;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface File {
+  id: string;
+  name: string;
+  url: string;
+  size: number;
+  type: FileType;
+
+  userId: string;
+  user: User | null;
+
+  folderId: string;
+  folder: Folder | null;
+
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubscriptionHistory {
+  id: string;
+  subscriptionId: string;
+  subscription: Subscription;
+  userId: string;
   createdAt: string;
   updatedAt: string;
 }
