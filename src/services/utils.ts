@@ -1,5 +1,7 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <> */
 "use server";
 
+import type { Role } from "@/types/enums";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
@@ -21,24 +23,6 @@ export const getToken = async (tokenName: "accessToken" | "refreshToken") => {
   return accessToken;
 };
 
-export const setToken = async (
-  tokenName: "accessToken" | "refreshToken",
-  token: string,
-) => {
-  (await cookies()).set(tokenName, token);
-};
-
-export const setCookies = async (accessToken: string, refreshToken: string) => {
-  await setToken("accessToken", accessToken);
-  await setToken("refreshToken", refreshToken);
-};
-
-export const removeToken = async (
-  tokenName: "accessToken" | "refreshToken",
-) => {
-  (await cookies()).delete(tokenName);
-};
-
 export const getValidToken = async (): Promise<string> => {
   const cookieStore = await cookies();
 
@@ -47,7 +31,6 @@ export const getValidToken = async (): Promise<string> => {
   if (!token || (await isTokenExpired(token))) {
     const { data } = await getNewToken();
     token = data?.accessToken;
-    await setToken("accessToken", token as string);
   }
 
   return (token as string) || "";
@@ -60,7 +43,7 @@ const getNewToken = async () => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: (await cookies()).get("refreshToken")!.value,
+        Authorization: (await cookies()).get("refreshToken")?.value as string,
       },
     });
 
@@ -79,10 +62,28 @@ export const getCurrentUser = async () => {
       id: string;
       email: string;
       name: string;
-      role: string;
+      role: Role;
     };
     return decodedData;
   } else {
     return null;
   }
+};
+
+export const saveToken = async (tokenName: string, token: string) => {
+  const cookieStore = await cookies();
+
+  cookieStore.set(tokenName, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 60 * 60 * 24,
+    path: "/",
+  });
+};
+
+export const removeToken = async (
+  tokenName: "accessToken" | "refreshToken",
+) => {
+  (await cookies()).delete(tokenName);
 };

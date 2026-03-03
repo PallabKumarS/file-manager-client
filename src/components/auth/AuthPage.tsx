@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: <> */
 "use client";
 
 // app/auth/page.tsx
@@ -302,6 +303,7 @@ export default function AuthPage() {
               >
                 {/* SVG edges */}
                 <svg
+                  aria-hidden="true"
                   className="absolute inset-0 w-full h-full pointer-events-none"
                   style={{ overflow: "visible" }}
                 >
@@ -320,6 +322,7 @@ export default function AuthPage() {
                     const to = NODES.find((n) => n.id === b)!;
                     return (
                       <line
+                        // biome-ignore lint/suspicious/noArrayIndexKey: <>
                         key={i}
                         className="f-edge"
                         x1={`${from.x + 3}%`}
@@ -354,7 +357,7 @@ export default function AuthPage() {
                       <div
                         className="absolute inset-0 rounded-2xl"
                         style={{
-                          // @ts-ignore
+                          // @ts-expect-error
                           "--rc": `${node.color}50`,
                           animation: `pulseRing ${2.5 + node.id * 0.28}s ease-out infinite`,
                           animationDelay: `${node.delay + 0.4}s`,

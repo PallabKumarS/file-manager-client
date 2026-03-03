@@ -2,7 +2,7 @@
 "use server";
 
 import type { FieldValues } from "react-hook-form";
-import { getValidToken, setCookies } from "./utils";
+import { getValidToken, saveToken } from "./utils";
 
 // region login user
 export const loginUser = async (data: { email: string; password: string }) => {
@@ -18,7 +18,8 @@ export const loginUser = async (data: { email: string; password: string }) => {
 
     const resData = await res.json();
 
-    await setCookies(resData?.data?.accessToken, resData?.data?.refreshToken);
+    await saveToken("accessToken", resData.data.accessToken);
+    await saveToken("refreshToken", resData.data.refreshToken);
 
     return resData;
   } catch (error: any) {
@@ -76,6 +77,42 @@ export const resetPassword = async (data: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+    });
+
+    return await res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+export const logoutUser = async () => {
+  try {
+    const res = await fetch(`${process.env.BASE_API}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    return await res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+export const setCookies = async (
+  accessToken?: string,
+  refreshToken?: string,
+) => {
+  try {
+    const res = await fetch(`${process.env.CLIENT_API}/api/auth`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        accessToken: accessToken || "",
+        refreshToken: refreshToken || "",
+      }),
     });
 
     return await res.json();

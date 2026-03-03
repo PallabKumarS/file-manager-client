@@ -6,18 +6,18 @@ export interface User {
   name: string;
   role: Role;
 
-  subscriptionId: string | null;
-  subscription: Subscription | null;
-  folders: Folder[] | null;
-  files: File[] | null;
-  subscriptionHistories: SubscriptionHistory[] | null;
+  subscriptionId?: string;
+  subscription?: Subscription;
+  folders?: Folder[];
+  files?: File[];
+  subscriptionHistories?: SubscriptionHistory[];
 
   totalFolders: number;
   totalFiles: number;
   isDeleted: boolean;
 
   createdAt: string;
-  updatedAt: string | null;
+  updatedAt: string;
 }
 
 export interface Subscription {
@@ -41,9 +41,9 @@ export interface Folder {
   name: string;
 
   userId: string;
-  parentId: string | null;
-  children: Folder[] | null;
-  files: File[] | null;
+  parentId?: string;
+  children?: Folder[];
+  files?: File[];
 
   nestLevel: number;
   isDeleted: boolean;
@@ -59,10 +59,10 @@ export interface File {
   type: FileType;
 
   userId: string;
-  user: User | null;
+  user?: User;
 
   folderId: string;
-  folder: Folder | null;
+  folder?: Folder;
 
   isDeleted: boolean;
   createdAt: string;

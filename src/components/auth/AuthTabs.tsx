@@ -4,21 +4,26 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoginForm, type LoginFormValues } from "./LoginForm";
 import { RegisterForm, type RegisterFormValues } from "./RegisterForm";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { loginUser } from "@/services/AuthService";
 import { createUser } from "@/services/UserService";
 
 export function AuthTabs() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirectPath") || "/dashboard/profile";
 
   async function handleLogin(values: LoginFormValues) {
     const toastId = toast.loading("Signing in...");
     try {
       const res = await loginUser(values);
+
+      console.log(res);
+
       if (res.success) {
         toast.success("Welcome back!", { id: toastId });
-        router.push("/dashboard");
+        router.push(redirectPath);
       } else {
         toast.error(
           res.message || "Login failed. Please check your credentials.",
