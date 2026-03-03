@@ -1,4 +1,3 @@
-
 import { Role } from "@/types/enums";
 import {
   User,
@@ -41,9 +40,9 @@ export const userNavItems: NavItem[] = [
 export const adminNavItems: NavItem[] = [
   { id: "profile", label: "Profile", href: "/dashboard/profile", icon: User },
   {
-    id: "subscriptions",
-    label: "Subscriptions",
-    href: "/dashboard/subscriptions",
+    id: "packages",
+    label: "Packages",
+    href: "/dashboard/packages",
     icon: CreditCard,
   },
   { id: "users", label: "Users", href: "/dashboard/users", icon: Users },

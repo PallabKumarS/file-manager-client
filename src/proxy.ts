@@ -4,8 +4,17 @@ import { getCurrentUser } from "./services/utils";
 const authRoutes = ["/auth", "/forgot-password"];
 
 const roleBasedPrivateRoutes = {
-  ADMIN: [/^\/dashboard\/admin/],
-  USER: [/^\/dashboard\/user/],
+  ADMIN: [
+    /^\/dashboard\/admin/,
+    /^\/dashboard\/users/,
+    /^\/dashboard\/packages/,
+  ],
+  USER: [
+    /^\/dashboard\/user/,
+    /^\/dashboard\/subscriptions/,
+    /^\/dashboard\/file-manager/,
+    /^\/dashboard\/subscription-history/,
+  ],
 };
 
 const sharedRoutes = [/^\/dashboard\/profile/, /^\/$/];

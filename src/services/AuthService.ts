@@ -2,7 +2,7 @@
 "use server";
 
 import type { FieldValues } from "react-hook-form";
-import { getValidToken, saveToken } from "./utils";
+import { getValidToken, removeToken, saveToken } from "./utils";
 
 // region login user
 export const loginUser = async (data: { email: string; password: string }) => {
@@ -86,6 +86,9 @@ export const resetPassword = async (data: {
 };
 
 export const logoutUser = async () => {
+  await removeToken("accessToken");
+  await removeToken("refreshToken");
+
   try {
     const res = await fetch(`${process.env.BASE_API}/auth/logout`, {
       method: "POST",

@@ -44,7 +44,7 @@ function getInitials(name: string) {
 
 // ── Component ──────────────────────────────────────────────────────────────
 export function AppSidebar() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const pathname = usePathname();
   const navItems = getNavItems(user?.role ?? Role.USER);
@@ -136,6 +136,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               tooltip="Sign Out"
               className="text-slate-500 hover:bg-red-50 hover:text-red-600 [&>svg]:text-slate-400 hover:[&>svg]:text-red-500 transition-colors"
+              onClick={logout}
             >
               <LogOut className="h-4 w-4" />
               <span>Sign Out</span>
